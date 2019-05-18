@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{# TODO: Make lessons detail page an editable form or an edit mode #}
+
+{% block title %}
+    {{ lesson.held_at|date:"Y m d h i" }} - {{ block.super }}
+{% endblock %}
+
+{# TODO: Figure out why the lesson/list urls didn't work #}
+{% block breadcrumb %}
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'lesson_list' %}">Lessons</a></li>
+            <li class="breadcrumb-item active">{{ client.held_at|date:"Y n j h:i" }}</li>
+{% endblock %}
+
+{% block content %}
+        <table class="table">
+        <tbody>
+            <tr>
+                <th>Held at</th>
+                <td>{{ lesson.held_at }}</td>
+            </tr>
+            <tr>
+                <th>Lesson type:</th>
+                <td>{{ lesson.session_type.type }}</td>
+            </tr>
+            <tr>
+                <th>Number of participants:</th>
+                <td>0</td>{# TODO: Render number of participants in lesson_details template #}
+            </tr>
+        </tbody>
+        {# TODO: Add editable lesson description to lesson_details template #}
+    </table>
+{% endblock %}

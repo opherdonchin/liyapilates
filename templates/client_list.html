@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}
+     Client list - {{ block.super }}
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+    <li class="breadcrumb-item active">Clients</li>
+{% endblock %}
+
+{% block content %}
+    {# TODO: Add new client button #}
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>Name</th>
+                <th>Last class</th>
+                <th>Card expires</th>
+                <th>Classes left</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for client in clients %}
+                <tr>
+                    <td>
+                        <a href="{% url 'client_details' client.slug %}">{{ client.name }}</a>
+                    </td>
+                    <td>5/2/2019{# TODO: Render last class for client #}</td>
+                    <td>5/20/2019{# TODO: Render card expiration for client #}</td>
+                    <td>12</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

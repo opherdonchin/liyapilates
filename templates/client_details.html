@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{# TODO: Add an edit mode to client details #}
+
+{% block title %}
+    {{ client.name }} - {{ block.super }}
+{% endblock %}
+
+{% block breadcrumb %}
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'client_list' %}">Client list</a></li>
+            <li class="breadcrumb-item active">{{ client.name }}</li>
+{% endblock %}
+
+{% block content %}
+    {# TOOD: Add ability to see and edit lessons per client #}
+        <table class="table">
+        <tbody>
+            <tr>
+                <th>Name</th>
+                <td>{{ client.name }}</td>
+            </tr>
+            <tr>
+                <th>Date joined:</th>
+                <td>{{ client.joined_on }}</td>
+            </tr>
+            <tr>
+                <th>Card type:</th>
+                <td>{{ client.card.card_type }}</td>
+            </tr>
+            <tr>
+                <th>Date purchased:</th>
+                <td>{{ client.purchased_on }}</td>
+            </tr>
+            <tr>
+                <th>Epires on:</th>
+                <td>{{ client.card.num_valid_days }}</td>{# TODO: Render card expiry date on client_details #}
+            </tr>
+            <tr>
+                <th>Lessons left:</th>
+                <th>{{ client.card.num_lessons }}</th>{# TODO: Redner lessons left on client details #}
+            </tr>
+        </tbody>
+        {# TODO: Render editable client description on client details #}
+    </table>
+{% endblock %}

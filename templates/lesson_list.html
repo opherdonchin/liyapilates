@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Lesson list
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+    <li class="breadcrumb-item active">Lessons</li>
+{% endblock %}
+
+{% block content %}
+    {# TODO: Add new lesson button #}
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>Date</th>
+                <th>Day</th>
+                <th>Time</th>
+                <th>Session type</th>
+                <th>Number of participants</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lesson in lessons %}
+                <tr>
+                    <td>
+                        <a href="{% url 'lesson_details' lesson.pk %}">{{ lesson.held_at|date:"j/n/y" }}</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'lesson_details' lesson.pk %}">{{ lesson.held_at|date:"l" }}</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'lesson_details' lesson.pk %}">{{ lesson.held_at|date:"G" }}</a>
+                    </td>
+                    <td>{{ lesson.session_type.short_name }}</td>
+                    <td>{{ lesson.participants.count }}</td>
+                    <td>12{# TODO: Render actual number of participants #}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
