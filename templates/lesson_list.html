@@ -33,9 +33,8 @@
                     <td>
                         <a href="{% url 'lesson_details' lesson.pk %}">{{ lesson.held_at|date:"G" }}</a>
                     </td>
-                    <td>{{ lesson.session_type.short_name }}</td>
-                    <td>{{ lesson.participants.count }}</td>
-                    <td>12{# TODO: Render actual number of participants #}</td>
+                    <td>{{ lesson.type.short_name }}</td>
+                    <td>{{ lesson.participant_count }}</td>
                 </tr>
             {% endfor %}
         </tbody>

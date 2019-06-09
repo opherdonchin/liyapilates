@@ -5,22 +5,47 @@
     <title>{% block title %}Liya Pilates{% endblock %}</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/app.css' %}"
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
 </head>
 <body>
-    <nav class="navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">Liya Pilates</a>
-        </div>
-    </nav>
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
     <div class="container">
-        <ol class="breadcrumb my-4">
-            {% block breadcrumb %}
-            {% endblock %}
-        </ol>
+        <a class="navbar-brand" href="{% url 'home' %}">Liya Pilates</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainMenu"
+                aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle Navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainMenu">
+            {# TODO: Add if with login link, like in myboards #}
+            <ul class="nav navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'client_list' %}">Clients</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'lesson_list' %}">Lessons</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'new_lesson' %}">Add lesson</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'new_client' %}">Add client</a>
+                </li>
+            </ul>
+        </div>
     </div>
+</nav>
 
-    {% block content %}
-    {% endblock %}
+<div class="container">
+    <ol class="breadcrumb my-4">
+        {% block breadcrumb %}
+        {% endblock %}
+    </ol>
+</div>
+
+{% block content %}
+{% endblock %}
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
 </body>
 </html>

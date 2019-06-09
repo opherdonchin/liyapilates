@@ -6,14 +6,16 @@
     {{ lesson.held_at|date:"Y m d h i" }} - {{ block.super }}
 {% endblock %}
 
-{# TODO: Figure out why the lesson/list urls didn't work #}
 {% block breadcrumb %}
             <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
             <li class="breadcrumb-item"><a href="{% url 'lesson_list' %}">Lessons</a></li>
-            <li class="breadcrumb-item active">{{ client.held_at|date:"Y n j h:i" }}</li>
+            <li class="breadcrumb-item active">{{ lesson.held_at|date:"M j, Y \a\t G:i" }}</li>
 {% endblock %}
 
 {% block content %}
+    <div class="mb-4">
+        <a href="{% url 'edit_lesson' lesson.pk %}" class="btn btn-primary">Edit</a>
+    </div>
         <table class="table">
         <tbody>
             <tr>
@@ -22,13 +24,17 @@
             </tr>
             <tr>
                 <th>Lesson type:</th>
-                <td>{{ lesson.session_type.type }}</td>
+                <td>{{ lesson.type.name }}</td>
             </tr>
             <tr>
                 <th>Number of participants:</th>
-                <td>0</td>{# TODO: Render number of participants in lesson_details template #}
+                <td>{{ lesson.participants.count }}</td>
             </tr>
         </tbody>
-        {# TODO: Add editable lesson description to lesson_details template #}
     </table>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include 'includes/form.html' %}
+        <button type="submit" class="btn btn-success">Update</button>
+    </form>
 {% endblock %}

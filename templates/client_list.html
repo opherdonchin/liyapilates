@@ -10,13 +10,13 @@
 {% endblock %}
 
 {% block content %}
-    {# TODO: Add new client button #}
     <table class="table">
         <thead class="thead-dark">
             <tr>
                 <th>Name</th>
                 <th>Last class</th>
-                <th>Card expires</th>
+                <th>Card type</th>
+                <th>Expires</th>
                 <th>Classes left</th>
             </tr>
         </thead>
@@ -26,9 +26,30 @@
                     <td>
                         <a href="{% url 'client_details' client.slug %}">{{ client.name }}</a>
                     </td>
-                    <td>5/2/2019{# TODO: Render last class for client #}</td>
-                    <td>5/20/2019{# TODO: Render card expiration for client #}</td>
-                    <td>12</td>
+                    <td>
+                        {% if client.latest_lesson %}
+                            <a href="{% url 'lesson_details' client.latest_lesson.pk %}">
+                                {{ client.latest_lesson.held_at|date:"M j, Y" }}
+                            </a>
+                        {% else %}
+                            No lessons
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if client.card %}
+                            {{ client.card.type.name }}
+                        {% else %}
+                            No card
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if client.card %}
+                            {{ client.card.expires|date:"M j, Y" }}
+                        {% else %}
+                            No card
+                        {% endif %}
+                    </td>
+                    <td>{{ client.lessons_left }}</td>
                 </tr>
             {% endfor %}
         </tbody>

@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
 
-{% block title %}New lesson{% endblock %}
+{% block title %}Add card{% endblock %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-    <li class="breadcrumb-item active">New lesson</li>
+    <li class="breadcrumb-item"><a href="{% url 'client_details' client.slug %}">{{ client.name }}</a></li>
+    <li class="breadcrumb-item active">Add card</li>
 {% endblock %}
 
 {% block content %}
     <form method="post" novalidate>
         {% csrf_token %}
         {% include 'includes/form.html' %}
-        <button type="submit" class="btn btn-success">Create</button>
-        {# TODO: Make cancel button for form #}
+        <button type="submit" class="btn btn-success">Add</button>
     </form>
 {% endblock %}
