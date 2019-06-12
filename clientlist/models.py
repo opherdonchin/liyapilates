@@ -25,17 +25,8 @@ class Client(models.Model):
     def __str__(self):
         return self.name
 
-    @property
     def latest_lesson(self):
         return self.lessons.latest('held_at')
-
-    @property
-    def lessons_left(self):
-        if self.card:
-            lessons_since_card = self.lessons.filter(held_at__gte=self.card.purchased_on)
-            return self.card.num_lessons - lessons_since_card.count()
-        else:
-            return 0
 
 
 class Card(models.Model):
@@ -44,7 +35,8 @@ class Card(models.Model):
     begins_on = models.DateField(default=date.today)
     expires = models.DateField(null=True)
     num_lessons = models.PositiveIntegerField(null=True)
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True,
+                               related_name='cards')
 
     def save(self, *args, **kwargs):
         if not self.expires:
@@ -56,11 +48,13 @@ class Card(models.Model):
     def default_expiration(self):
         return self.purchased_on + timedelta(days=self.type.num_valid_days)
 
+    @property
     def lessons_used(self):
         return self.client.lessons.filter(held_at__gte=self.begins_on, recordDate__lte=self.expires)
 
-# TODO: Add lessons_left and expiry_date to Client
-# TODO: Maybe add model for PurchasedCard that would be based on Card
+    @property
+    def lessons_left(self):
+        return self.num_lessons - self.lessons_used
 
 
 # TODO: Change type property to full_name in SessionType

@@ -1,10 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Count
+from django.db.models import Count, OuterRef, Subquery, Q, F
 from django.utils.text import slugify
-from datetime import timedelta, datetime
+from django.utils import timezone
+from datetime import datetime
 
 # Create your views here.
-from .models import Client, Lesson
+from .models import Client, Lesson, Card
 from .forms import NewLessonForm, \
     LessonDetailsForm, \
     EditLessonForm, \
@@ -16,11 +17,32 @@ from .forms import NewLessonForm, \
 
 def client_list(request):
     clients = Client.objects.all()
+
+    current_cards = Card.objects.filter(client=OuterRef('slug'),
+                                        purchased_on__lte=timezone.now(),
+                                        expires__gte=timezone.now()).order_by("-purchased_on")
+    newest_lessons = Lesson.objects.filter(participants=OuterRef('slug')).values('participants').order_by('held_at')
+
+    clients = clients.annotate(card_type=Subquery(current_cards[:1].values('type__name'))) \
+        .annotate(card_begins_on=Subquery(current_cards[:1].values('begins_on'))) \
+        .annotate(card_expires=Subquery(current_cards[:1].values('expires'))) \
+        .annotate(card_num_lessons=Subquery(current_cards[:1].values('num_lessons'))) \
+        .annotate(card_lessons_used=Count(
+        'lessons__pk', filter=Q(lessons__held_at__gte=F('card_begins_on'),
+                                lessons__held_at__lte=F('card_expires'),
+                                ), distinct=True)) \
+        .annotate(card_lessons_left=F('card_num_lessons') - F('card_lessons_used')) \
+        .annotate(latest_lesson_date=Subquery(newest_lessons[:1].values('held_at'))) \
+        .annotate(latest_lesson_pk=Subquery(newest_lessons[:1].values('pk')))
+
     return render(request, 'client_list.html', {'clients': clients})
 
 
 def client_details(request, client_slug):
     client = get_object_or_404(Client, slug=client_slug)
+    client.card = client.cards\
+        .filter(begins_on__lte=timezone.now(), expires__gte=timezone.now())\
+        .latest('-expires')
 
     #  TODO: Add decorations to html for expired or empty card and no card
     if request.method == 'POST':
@@ -116,4 +138,3 @@ def edit_lesson(request, pk):
     else:
         form = EditLessonForm(instance=lesson)
     return render(request, 'edit_lesson.html', {'form': form, 'lesson': lesson})
-

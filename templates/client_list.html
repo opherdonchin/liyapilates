@@ -27,29 +27,29 @@
                         <a href="{% url 'client_details' client.slug %}">{{ client.name }}</a>
                     </td>
                     <td>
-                        {% if client.latest_lesson %}
-                            <a href="{% url 'lesson_details' client.latest_lesson.pk %}">
-                                {{ client.latest_lesson.held_at|date:"M j, Y" }}
+                        {% if client.latest_lesson_pk %}
+                            <a href="{% url 'lesson_details' client.latest_lesson_pk %}">
+                                {{ client.latest_lesson_date|date:"M j, Y" }}
                             </a>
                         {% else %}
                             No lessons
                         {% endif %}
                     </td>
                     <td>
-                        {% if client.card %}
-                            {{ client.card.type.name }}
+                        {% if client.card_type %}
+                            {{ client.card_type }}
                         {% else %}
                             No card
                         {% endif %}
                     </td>
                     <td>
-                        {% if client.card %}
-                            {{ client.card.expires|date:"M j, Y" }}
+                        {% if client.card_expires %}
+                            {{ client.card_expires|date:"M j, Y" }}
                         {% else %}
                             No card
                         {% endif %}
                     </td>
-                    <td>{{ client.lessons_left }}</td>
+                    <td>{{ client.card_lessons_left }}</td>
                 </tr>
             {% endfor %}
         </tbody>
