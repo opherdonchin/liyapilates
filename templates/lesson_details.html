@@ -6,6 +6,17 @@
     {{ lesson.held_at|date:"Y m d h i" }} - {{ block.super }}
 {% endblock %}
 
+{% block stylesheet %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+{% endblock %}
+
+{% block javascript %}
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    <script>
+        var simplemde = new SimpleMDE()
+    </script>
+{% endblock %}
+
 {% block breadcrumb %}
             <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
             <li class="breadcrumb-item"><a href="{% url 'lesson_list' %}">Lessons</a></li>
@@ -19,8 +30,8 @@
         <table class="table">
         <tbody>
             <tr>
-                <th>Held at</th>
-                <td>{{ lesson.held_at }}</td>
+                <th>Held at:</th>
+                <td>{{ lesson.held_at|date:"l F d, Y \a\t H:i" }}</td>
             </tr>
             <tr>
                 <th>Lesson type:</th>

@@ -63,7 +63,6 @@ class ClientNotesForm(forms.ModelForm):
 
 
 class NewClientForm(forms.ModelForm):
-    # TODO: Description field in new client form (get code from SignUpForm in boards)
     notes = forms.CharField(
         widget=forms.Textarea(
             attrs={'rows': 5, 'placeholder': 'Client notes'}

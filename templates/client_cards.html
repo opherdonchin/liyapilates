@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}{{ subject.name }} cards{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'client_list' %}">Clients</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'client_details' client.slug %}">{{ client.name }}</a></li>
+    <li class="breadcrumb-item active">cards</li>
+{% endblock %}
+
+{% block content %}
+    <h1>{{ client.name }}: List of cards</h1>
+    <div class="mb-4">
+        <a href="{% url 'add_card' client.slug %}" class="btn btn-primary" role="button">Add card</a>
+    </div>
+
+    <table class="table table-striped mb-4">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Purchased</th>
+                <th>Began</th>
+                <th>Expired</th>
+                <th>Total lessons</th>
+                <th>Lessons used</th>
+                <th>Lessons left</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for card in cards %}
+                <tr>
+                    <td>{{ card.purchased_on }}</td>
+                    <td>{{ card.begins_on }}</td>
+                    <td>{{ card.expires }}</td>
+                    <td>{{ card.num_lessons }}</td>
+                    <td>{{ card.lessons_used }}</td>
+                    <td>{{ card.lessons_left }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% include 'includes/pagination.html' %}
+
+{% endblock %}

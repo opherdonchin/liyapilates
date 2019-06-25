@@ -4,6 +4,17 @@
     {{ client.name }} - {{ block.super }}
 {% endblock %}
 
+{% block stylesheet %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+{% endblock %}
+
+{% block javascript %}
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    <script>
+        var simplemde = new SimpleMDE()
+    </script>
+{% endblock %}
+
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
     <li class="breadcrumb-item"><a href="{% url 'client_list' %}">Client list</a></li>
@@ -41,11 +52,14 @@
         </tr>
         <tr>
             <th>Lessons left:</th>
-            <td>{% if client.card %}{{ client.lessons_left }}{% else %}No card{% endif %}</td>
+            <td>{% if client.card %}{{ client.card.lessons_left }}{% else %}No card{% endif %}</td>
             {# TODO: decorate lessons_left if < 0 #}
         </tr>
         </tbody>
     </table>
+    <div class="mb-4">
+        <a href="{% url 'client_cards' client.slug %}" class="btn btn-primary">Show card history</a>
+    </div>
     <form method="post" novalidate>
         {% csrf_token %}
         {% include 'includes/form.html' %}

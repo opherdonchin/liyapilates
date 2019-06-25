@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Count, OuterRef, Subquery, Q, F
+from django.views.generic import ListView
 from django.utils.text import slugify
 from django.utils import timezone
 from datetime import datetime
@@ -15,6 +16,8 @@ from .forms import NewLessonForm, \
     AddCardForm
 
 
+# TODO: Add user authentication and make client and admin views
+
 def client_list(request):
     clients = Client.objects.all()
 
@@ -27,10 +30,9 @@ def client_list(request):
         .annotate(card_begins_on=Subquery(current_cards[:1].values('begins_on'))) \
         .annotate(card_expires=Subquery(current_cards[:1].values('expires'))) \
         .annotate(card_num_lessons=Subquery(current_cards[:1].values('num_lessons'))) \
-        .annotate(card_lessons_used=Count(
-        'lessons__pk', filter=Q(lessons__held_at__gte=F('card_begins_on'),
-                                lessons__held_at__lte=F('card_expires'),
-                                ), distinct=True)) \
+        .annotate(card_lessons_used=Count('lessons__pk', filter=Q(lessons__held_at__gte=F('card_begins_on'),
+                                                                  lessons__held_at__lte=F('card_expires'),
+                                                                  ), distinct=True)) \
         .annotate(card_lessons_left=F('card_num_lessons') - F('card_lessons_used')) \
         .annotate(latest_lesson_date=Subquery(newest_lessons[:1].values('held_at'))) \
         .annotate(latest_lesson_pk=Subquery(newest_lessons[:1].values('pk')))
@@ -40,9 +42,12 @@ def client_list(request):
 
 def client_details(request, client_slug):
     client = get_object_or_404(Client, slug=client_slug)
-    client.card = client.cards\
-        .filter(begins_on__lte=timezone.now(), expires__gte=timezone.now())\
-        .latest('-expires')
+    if client.cards.count() > 0:
+        client.card = client.cards \
+            .filter(begins_on__lte=timezone.now(), expires__gte=timezone.now()) \
+            .latest('-expires')
+    else:
+        client.card = None
 
     #  TODO: Add decorations to html for expired or empty card and no card
     if request.method == 'POST':
@@ -75,12 +80,44 @@ def add_card(request, client_slug):
         form = AddCardForm(request.POST)
         if form.is_valid():
             card = form.save()
-            client.card = card
+            client.cards.add(card)
             client.save()
             return redirect('client_details', client_slug=client.slug)
     else:
         form = AddCardForm()
     return render(request, 'add_card.html', {'form': form, 'client': client})
+
+
+class ClientCards(ListView):
+    model = Card
+    context_object_name = 'cards'
+    template_name = 'client_cards.html'
+    paginate_by = 5
+
+    def __init__(self):
+        super().__init__()
+        self.client = None
+
+    def get_context_data(self, **kwargs):
+        kwargs['client'] = self.client
+        return super().get_context_data(**kwargs)
+
+    def get_queryset(self, **kwargs):
+        self.client = get_object_or_404(Client, slug=self.kwargs.get('client_slug'))
+        queryset = self.client.cards.order_by('-expires')
+        return queryset
+
+
+def client_lessons(request, client_slug):
+    client = get_object_or_404(Lesson, slug=client_slug)
+    if request.method == 'POST':
+        form = ClientLessonsForms(request.POST, instance=lesson)
+        if form.is_valid():
+            lesson = form.save()
+            return redirect('lesson_details', pk=lesson.pk)
+    else:
+        form = LessonDetailsForm(instance=lesson)
+    return render(request, 'lesson_details.html', {'lesson': lesson, 'form': form})
 
 
 def new_client(request):
@@ -104,6 +141,8 @@ def lesson_list(request):
     return render(request, 'lesson_list.html', {'lessons': lessons})
 
 
+# TODO: Refactor lesson_details as FormView class
+
 def lesson_details(request, pk):
     lesson = get_object_or_404(Lesson, pk=pk)
     if request.method == 'POST':
@@ -121,14 +160,13 @@ def new_lesson(request):
         form = NewLessonForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('home')
+            return redirect('lesson_list')
     else:
         form = NewLessonForm()
     return render(request, 'new_lesson.html', {'form': form})
 
 
 def edit_lesson(request, pk):
-    #  TODO: Write tests for edit_client view
     lesson = get_object_or_404(Lesson, pk=pk)
     if request.method == 'POST':
         form = EditLessonForm(request.POST, instance=lesson)

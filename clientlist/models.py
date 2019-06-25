@@ -1,6 +1,8 @@
 from django.db import models
-from datetime import date, datetime, timedelta
 from django.core.validators import MinValueValidator
+from django.utils.html import mark_safe
+from datetime import date, datetime, timedelta
+from markdown import markdown
 
 # Create your models here.
 
@@ -15,18 +17,22 @@ class CardType(models.Model):
         return self.name
 
 
+# TODO: Add phone number and e-mail to client and add support for class reminders
 class Client(models.Model):
     name = models.CharField(max_length=30)
     slug = models.SlugField(max_length=35, default='0', unique=True, primary_key=True)
     added_on = models.DateField(auto_now_add=True)
     joined_on = models.DateField(default=date.today)
-    notes = models.CharField(max_length=4000, blank=True)
+    notes = models.CharField(max_length=4000, blank=True, default='')
 
     def __str__(self):
         return self.name
 
     def latest_lesson(self):
         return self.lessons.latest('held_at')
+
+    def get_notes_as_markdown(self):
+        return mark_safe(markdown(self.notes, safe_mode='escape'))
 
 
 class Card(models.Model):
@@ -50,14 +56,13 @@ class Card(models.Model):
 
     @property
     def lessons_used(self):
-        return self.client.lessons.filter(held_at__gte=self.begins_on, recordDate__lte=self.expires)
+        return self.client.lessons.filter(held_at__gte=self.begins_on, held_at__lte=self.expires).count()
 
     @property
     def lessons_left(self):
         return self.num_lessons - self.lessons_used
 
 
-# TODO: Change type property to full_name in SessionType
 class LessonType(models.Model):
     name = models.CharField(max_length=25)
     short_name = models.CharField(max_length=10)

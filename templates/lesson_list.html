@@ -10,7 +10,10 @@
 {% endblock %}
 
 {% block content %}
-    {# TODO: Add new lesson button #}
+    <div class="mb-4">
+        <a href="{% url 'new_lesson' %}" class="btn btn-primary">New lesson</a>
+    </div>
+
     <table class="table">
         <thead class="thead-dark">
             <tr>
@@ -25,13 +28,13 @@
             {% for lesson in lessons %}
                 <tr>
                     <td>
-                        <a href="{% url 'lesson_details' lesson.pk %}">{{ lesson.held_at|date:"j/n/y" }}</a>
+                        <a href="{% url 'lesson_details' lesson.pk %}">{{ lesson.held_at|date:"d/m/y" }}</a>
                     </td>
                     <td>
                         <a href="{% url 'lesson_details' lesson.pk %}">{{ lesson.held_at|date:"l" }}</a>
                     </td>
                     <td>
-                        <a href="{% url 'lesson_details' lesson.pk %}">{{ lesson.held_at|date:"G" }}</a>
+                        <a href="{% url 'lesson_details' lesson.pk %}">{{ lesson.held_at|date:"H:i" }}</a>
                     </td>
                     <td>{{ lesson.type.short_name }}</td>
                     <td>{{ lesson.participant_count }}</td>

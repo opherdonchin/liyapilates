@@ -4,7 +4,7 @@
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'lesson_details' lesson.pk %}">{{ lesson.held_at|date:"M j, Y \a\t G:i" }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'lesson_details' lesson.pk %}">{{ lesson.held_at|date:"F d, Y \a\t H:i" }}</a></li>
     <li class="breadcrumb-item active">Edit</li>
 {% endblock %}
 
