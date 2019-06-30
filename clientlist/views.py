@@ -13,7 +13,8 @@ from .forms import NewLessonForm, \
     ClientNotesForm, \
     NewClientForm, \
     EditClientForm, \
-    AddCardForm
+    AddCardForm, \
+    ClientLessonsForm
 
 
 # TODO: Add user authentication and make client and admin views
@@ -109,15 +110,23 @@ class ClientCards(ListView):
 
 
 def client_lessons(request, client_slug):
-    client = get_object_or_404(Lesson, slug=client_slug)
+    client = get_object_or_404(Client, slug=client_slug)
     if request.method == 'POST':
-        form = ClientLessonsForms(request.POST, instance=lesson)
+        form = ClientLessonsForm(request.POST, instance=client)
         if form.is_valid():
-            lesson = form.save()
-            return redirect('lesson_details', pk=lesson.pk)
+            client = form.save(commit=False)
+            lessons_attended = form.cleaned_data['lessons_attended']
+            lessons_not_attended = form.cleaned_data['lessons_not_attended']
+            new_lessons_attended = lessons_attended.union(lessons_not_attended)
+            client.lessons.clear()
+            for lesson in new_lessons_attended:
+                client.lessons.add(lesson)
+
+            client.save()
+            return redirect('client_details', client_slug=client_slug)
     else:
-        form = LessonDetailsForm(instance=lesson)
-    return render(request, 'lesson_details.html', {'lesson': lesson, 'form': form})
+        form = ClientLessonsForm(instance=client)
+    return render(request, 'client_lessons.html', {'client': client, 'form': form})
 
 
 def new_client(request):

@@ -59,7 +59,33 @@ class ClientNotesForm(forms.ModelForm):
 
     class Meta:
         model = Client
-        fields = ('notes', )
+        fields = ('notes',)
+
+
+class ClientLessonsForm(forms.ModelForm):
+    lessons_attended = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                                      queryset=None, required=False)
+    lessons_not_attended = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                                          queryset=None, required=False)
+
+    class Meta:
+        model = Client
+        fields = ('lessons_attended', 'lessons_not_attended', )
+        widgets = {'lessons_attended': forms.CheckboxSelectMultiple,
+                   'lessons_not_attended': forms.CheckboxSelectMultiple}
+
+    def __init__(self, *args, **kwargs):
+        super(ClientLessonsForm, self).__init__(*args, **kwargs)
+        client = self.instance
+        client_attended = client.lessons.all()
+        client_attended_pk = list(client_attended.values_list('pk', flat=True))
+        client_not_attended = Lesson.objects.exclude(pk__in=client_attended_pk).order_by('-held_at')[:10]
+        client_not_attended_pk = list(client_not_attended.values_list('pk', flat=True))
+        self.fields['lessons_attended'].queryset = client_attended
+        self.fields['lessons_not_attended'].queryset = Lesson.objects.filter(pk__in=client_not_attended_pk)
+        self.initial['lessons_attended'] = client_attended_pk
+        self.initial['lessons_not_attended'] = []
+
 
 
 class NewClientForm(forms.ModelForm):

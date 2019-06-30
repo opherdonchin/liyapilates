@@ -58,6 +58,7 @@
         </tbody>
     </table>
     <div class="mb-4">
+        <a href="{% url 'client_lessons' client.slug %}" class="btn btn-primary">Lessons attended</a>
         <a href="{% url 'client_cards' client.slug %}" class="btn btn-primary">Show card history</a>
     </div>
     <form method="post" novalidate>

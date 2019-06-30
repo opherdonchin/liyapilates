@@ -31,10 +31,12 @@ class ClientDetailsTests(ClientListTestCase):
         add_card_url = reverse('add_card', kwargs={'client_slug': self.client_slug1})
         edit_client_url = reverse('edit_client', kwargs={'client_slug': self.client_slug1})
         client_cards_url = reverse('client_cards', kwargs={'client_slug': self.client_slug1})
+        client_lessons_url = reverse('client_lessons', kwargs={'client_slug': self.client.slug1})
         self.assertContains(self.response, 'a href="{0}"'.format(homepage_url))
         self.assertContains(self.response, 'a href="{0}" class="btn'.format(add_card_url))
         self.assertContains(self.response, 'a href="{0}" class="btn'.format(edit_client_url))
         self.assertContains(self.response, 'a href="{0}" class="btn'.format(client_cards_url))
+        self.assertContains(self.response, 'a href="{0}" class="btn'.format(client_lessons_url))
 
     def test_html_no_data(self):
         self.assertContains(self.response, '<td>No card</td>', count=4)
