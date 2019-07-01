@@ -81,11 +81,11 @@ WSGI_APPLICATION = 'liyapilates.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASE_URL = os.environ['DATABASE_URL']
-conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+DATABASE_URL = config('DATABASE_URL')
+conn = psycopg2.connect(DATABASE_URL, sslmode='allow')
 DATABASES = {
     'default': dj_database_url.config(
-        default=config('DATABASE_URL')
+        default=DATABASE_URL
     )
 }
 
@@ -129,6 +129,8 @@ USE_TZ = False
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+STATICFILES_DIRS = (os.path.join(PROJECT_ROOT, 'static'))
+
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
