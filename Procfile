@@ -1,0 +1,1 @@
+web: gunicorn liyapilates.wsgi --log-file -
