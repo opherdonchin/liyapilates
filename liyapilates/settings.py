@@ -135,5 +135,6 @@ STATICFILES_DIRS = (os.path.join(PROJECT_ROOT, 'static'))
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 django_heroku.settings(locals())
