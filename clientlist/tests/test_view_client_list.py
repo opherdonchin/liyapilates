@@ -9,19 +9,19 @@ class ClientListViewTests(ClientListTestCase):
         self.url = reverse('client_list')
         self.response = self.client.get(self.url)
 
-    def test_client_list_view_status_code(self):
+    def test_view_status_code(self):
         self.assertEquals(self.response.status_code, 200)
 
-    def test_client_list_url_resolves_client_list_view(self):
+    def test_url_resolves_view(self):
         view = resolve('/client_list/')
         self.assertEquals(view.func, client_list)
 
-    def test_client_list_view_contains_client_link(self):
+    def test_view_contains_links(self):
+        new_client_url = reverse('new_client')
         client_details_url = reverse('client_details', kwargs={'client_slug': self.client_slug1})
-        self.assertContains(self.response, 'href="{0}"'.format(client_details_url))
-
-    def test_client_list_view_contains_lesson_link(self):
         lesson_details_url = reverse('lesson_details', kwargs={'pk': self.lesson.pk})
+        self.assertContains(self.response, 'href="{0}"'.format(new_client_url))
+        self.assertContains(self.response, 'href="{0}"'.format(client_details_url))
         self.assertContains(self.response, 'href="{0}"'.format(lesson_details_url))
 
     def test_client_details_view_no_card(self):
@@ -47,13 +47,13 @@ class ClientListViewTests(ClientListTestCase):
         self.assertContains(self.response, '{0:%b %#d, %Y}'.format(self.card_expires), html=True)
         self.assertContains(self.response, '{0}'.format(self.card_num_lessons-1), html=True)
 
-    def test_client_list_view_breadcrumbs(self):
+    def test_view_breadcrumbs(self):
         home_url = reverse('home')
         self.assertContains(self.response,
                             '<li class="breadcrumb-item"><a href="{0}">Home</a>'
                             .format(home_url), html=True)
 
-    def test_client_list_view_navbar(self):
+    def test_view_navbar(self):
         client_list_url = reverse('client_list')
         lesson_list_url = reverse('lesson_list')
         new_lesson_url = reverse('new_lesson')

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'widget_tweaks',
+    'import_export',
 
     'clientlist.apps.ClientlistConfig',
 ]
@@ -134,3 +135,5 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 django_heroku.settings(locals())
+
+IMPORT_EXPORT_USE_TRANSACTIONS = True
