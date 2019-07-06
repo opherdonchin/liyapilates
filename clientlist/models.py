@@ -45,7 +45,11 @@ class Card(models.Model):
                                related_name='cards')
 
     def __str__(self):
-        return self.client.name + ': ' + self.purchased_on.strftime('%Y-%m-%d')
+        if self.client:
+            clientname = self.client.name
+        else:
+            clientname = 'None'
+        return clientname + ': ' + self.purchased_on.strftime('%Y-%m-%d')
 
     def default_expiration(self):
         return self.purchased_on + timedelta(days=self.type.num_valid_days)

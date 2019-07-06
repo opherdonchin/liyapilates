@@ -30,6 +30,7 @@ def client_list(request):
     newest_lessons = Lesson.objects.filter(participants=OuterRef('pk')).values('participants').order_by('held_at')
 
     clients = clients.annotate(card_type=Subquery(current_cards[:1].values('type__name'))) \
+        .order_by('name') \
         .annotate(card_begins_on=Subquery(current_cards[:1].values('begins_on'))) \
         .annotate(card_expires=Subquery(current_cards[:1].values('expires'))) \
         .annotate(card_num_lessons=Subquery(current_cards[:1].values('num_lessons'))) \
@@ -38,8 +39,7 @@ def client_list(request):
                                                                   ), distinct=True)) \
         .annotate(card_lessons_left=F('card_num_lessons') - F('card_lessons_used')) \
         .annotate(latest_lesson_date=Subquery(newest_lessons[:1].values('held_at'))) \
-        .annotate(latest_lesson_pk=Subquery(newest_lessons[:1].values('pk'))) \
-        .obser
+        .annotate(latest_lesson_pk=Subquery(newest_lessons[:1].values('pk'))) 
 
     return render(request, 'client_list.html', {'clients': clients})
 
