@@ -134,7 +134,21 @@ def new_client(request):
         form = NewClientForm(request.POST)
         if form.is_valid():
             client = form.save(commit=False)
-            client.slug = slugify(client.name)  # TODO: Make this a unique slug. Possibly override save function
+
+            # Convert Hebrew characters to english equivalents for slug
+            hebrew = u'אבגדהוזחטיכךלמםנןסעפףצקרשת'
+            english = ['a', 'b', 'g', 'd', 'h', 'v', 'z', 'gh', 't', 'i', 'c', 'ch', 'l', 'm', 'm', 'n', 'n', 's', 'a',
+                       'p', 'f',
+                       'tz', 'ts', 'k', 'r', 'sh', 'th']
+            translated_name = ''
+            for i in client.name:
+                indx = hebrew.find(i, 0)
+                if indx == -1:
+                    translated_name += i
+                else:
+                    translated_name += english[indx]
+
+            client.slug = slugify(translated_name)  # TODO: Make this a unique slug. Possibly override save function
             client.added_on = datetime.now()
             client.card = None
             client.save()
