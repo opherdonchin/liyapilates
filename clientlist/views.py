@@ -97,7 +97,7 @@ def edit_card(request, client_slug, card_pk):
     if card not in client.cards.get_queryset():
         raise Http404
     if request.method == 'POST':
-        form = EditCardForm(request.POST)
+        form = EditCardForm(request.POST, instance=card)
         if form.is_valid():
             form.save()
             return redirect('client_cards', client_slug=client.slug)
