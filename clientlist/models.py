@@ -44,13 +44,6 @@ class Card(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True,
                                related_name='cards')
 
-    def save(self, *args, **kwargs):
-        if not self.expires:
-            self.expires = self.default_expiration()
-        if not self.num_lessons:
-            self.num_lessons = self.type.num_lessons
-        super(Card, self).save(*args, **kwargs)
-
     def default_expiration(self):
         return self.purchased_on + timedelta(days=self.type.num_valid_days)
 

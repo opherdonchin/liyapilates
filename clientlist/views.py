@@ -82,7 +82,10 @@ def add_card(request, client_slug):
     if request.method == 'POST':
         form = AddCardForm(request.POST)
         if form.is_valid():
-            card = form.save()
+            card = form.save(commit=False)
+            card.num_lessons = card.type.num_lessons
+            card.expires = card.default_expiration()
+            card.save()
             client.cards.add(card)
             client.save()
             return redirect('client_details', client_slug=client.slug)
