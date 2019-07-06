@@ -3,6 +3,7 @@ from django.db.models import Count, OuterRef, Subquery, Q, F
 from django.views.generic import ListView
 from django.utils.text import slugify
 from django.utils import timezone
+from django.http import Http404
 from datetime import datetime
 
 # Create your views here.
@@ -14,6 +15,7 @@ from .forms import NewLessonForm, \
     NewClientForm, \
     EditClientForm, \
     AddCardForm, \
+    EditCardForm, \
     ClientLessonsForm
 
 
@@ -87,6 +89,21 @@ def add_card(request, client_slug):
     else:
         form = AddCardForm()
     return render(request, 'add_card.html', {'form': form, 'client': client})
+
+
+def edit_card(request, client_slug, card_pk):
+    client = get_object_or_404(Client, slug=client_slug)
+    card = get_object_or_404(Card, pk=card_pk)
+    if card not in client.cards.get_queryset():
+        raise Http404
+    if request.method == 'POST':
+        form = EditCardForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('client_cards', client_slug=client.slug)
+    else:
+        form = EditCardForm(instance=card)
+    return render(request, 'edit_card.html', {'form': form, 'client': client, 'card': card})
 
 
 class ClientCards(ListView):

@@ -26,6 +26,7 @@ urlpatterns = [
     path('client/<slug:client_slug>/', views.client_details, name='client_details'),
     path('client/<slug:client_slug>/edit', views.edit_client, name='edit_client'),  # TODO: make edit_client view
     path('client/<slug:client_slug>/new_card', views.add_card, name='add_card'),
+    path('client/<slug:client_slug>/edit_card/<int:card_pk>', views.edit_card, name='edit_card'),
     path('client/<slug:client_slug>/cards', views.ClientCards.as_view(), name='client_cards'),
     path('client/<slug:client_slug>/lessons', views.client_lessons, name='client_lessons'),
     path('lesson_list/', views.lesson_list, name='lesson_list'),

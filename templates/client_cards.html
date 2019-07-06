@@ -26,6 +26,7 @@
                 <th>Total lessons</th>
                 <th>Lessons used</th>
                 <th>Lessons left</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -37,6 +38,7 @@
                     <td>{{ card.num_lessons }}</td>
                     <td>{{ card.lessons_used }}</td>
                     <td>{{ card.lessons_left }}</td>
+                    <td><a href="{% url 'edit_card' client.slug card.pk %}" class="btn btn-secondary">Edit</a><</td>
                 </tr>
             {% endfor %}
         </tbody>

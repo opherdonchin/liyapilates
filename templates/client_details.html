@@ -39,20 +39,36 @@
         </tr>
         <tr>
             <th>Card type:</th>
-            <td>{% if client.card %}{{ client.card.type.name }}{% else %}No card{% endif %}</td>
+            <td>{% if client.card %}
+                <a href="{% url 'edit_card' client.slug client.card.pk %}">{{ client.card.type.name }}</a>
+            {% else %}
+                No card
+            {% endif %}</td>
         </tr>
         <tr>
             <th>Date purchased:</th>
-            <td>{% if client.card %}{{ client.card.purchased_on }}{% else %}No card{% endif %}</td>
+            <td>{% if client.card %}
+                <a href="{% url 'edit_card' client.slug client.card.pk %}">{{ client.card.purchased_on }}</a>
+            {% else %}
+                No card
+            {% endif %}</td>
         </tr>
         <tr>
             <th>Epires on:</th>
-            <td>{% if client.card %}{{ client.card.expires }}{% else %}No card{% endif %}</td>
+            <td>{% if client.card %}
+                <a href="{% url 'edit_card' client.slug client.card.pk %}">{{ client.card.expires }}</a>
+            {% else %}
+                No card
+            {% endif %}</td>
              {# TODO: Decorate expiry date if expired! #}
         </tr>
         <tr>
             <th>Lessons left:</th>
-            <td>{% if client.card %}{{ client.card.lessons_left }}{% else %}No card{% endif %}</td>
+            <td>{% if client.card %}
+                <a href="{% url 'edit_card' client.slug client.card.pk %}">{{ client.card.lessons_left }}</a>
+            {% else %}
+                No card
+            {% endif %}</td>
             {# TODO: decorate lessons_left if < 0 #}
         </tr>
         </tbody>

@@ -87,7 +87,6 @@ class ClientLessonsForm(forms.ModelForm):
         self.initial['lessons_not_attended'] = []
 
 
-
 class NewClientForm(forms.ModelForm):
     notes = forms.CharField(
         widget=forms.Textarea(
@@ -116,3 +115,9 @@ class AddCardForm(forms.ModelForm):
     class Meta:
         model = Card
         fields = ('type', 'purchased_on')
+
+
+class EditCardForm(forms.ModelForm):
+    class Meta:
+        model = Card
+        fields = ('type', 'purchased_on', 'begins_on', 'num_lessons', 'expires')

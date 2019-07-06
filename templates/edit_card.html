@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit card{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'client_details' client.slug %}">{{ client.name }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'client_cards' client.slug %}">Cards</a></li>
+    <li class="breadcrumb-item active">Edit card</li>
+{% endblock %}
+
+{% block content %}
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include 'includes/form.html' %}
+        <button type="submit" class="btn btn-success">Save</button>
+    </form>
+{% endblock %}
