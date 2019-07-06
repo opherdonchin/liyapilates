@@ -22,10 +22,10 @@ from .forms import NewLessonForm, \
 def client_list(request):
     clients = Client.objects.all()
 
-    current_cards = Card.objects.filter(client=OuterRef('slug'),
+    current_cards = Card.objects.filter(client=OuterRef('pk'),
                                         purchased_on__lte=timezone.now(),
                                         expires__gte=timezone.now()).order_by("-purchased_on")
-    newest_lessons = Lesson.objects.filter(participants=OuterRef('slug')).values('participants').order_by('held_at')
+    newest_lessons = Lesson.objects.filter(participants=OuterRef('pk')).values('participants').order_by('held_at')
 
     clients = clients.annotate(card_type=Subquery(current_cards[:1].values('type__name'))) \
         .annotate(card_begins_on=Subquery(current_cards[:1].values('begins_on'))) \

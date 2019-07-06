@@ -20,7 +20,7 @@ class CardType(models.Model):
 # TODO: Add phone number and e-mail to client and add support for class reminders
 class Client(models.Model):
     name = models.CharField(max_length=30)
-    slug = models.SlugField(max_length=35, default='0', unique=True, primary_key=True)
+    slug = models.SlugField(max_length=35, default='0', unique=True)
     added_on = models.DateField(auto_now_add=True)
     joined_on = models.DateField(default=date.today)
     notes = models.CharField(max_length=4000, blank=True, default='')
