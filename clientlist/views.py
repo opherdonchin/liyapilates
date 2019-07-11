@@ -39,7 +39,7 @@ def client_list(request):
                                                                   ), distinct=True)) \
         .annotate(card_lessons_left=F('card_num_lessons') - F('card_lessons_used')) \
         .annotate(latest_lesson_date=Subquery(newest_lessons[:1].values('held_at'))) \
-        .annotate(latest_lesson_pk=Subquery(newest_lessons[:1].values('pk'))) 
+        .annotate(latest_lesson_pk=Subquery(newest_lessons[:1].values('pk')))
 
     return render(request, 'client_list.html', {'clients': clients})
 
@@ -181,7 +181,7 @@ def new_client(request):
 
 def lesson_list(request):
     lessons = Lesson.objects.all()
-    lessons = lessons.annotate(participant_count=Count('participants'))
+    lessons = lessons.annotate(participant_count=Count('participants')).order_by('-held_at')
     return render(request, 'lesson_list.html', {'lessons': lessons})
 
 
