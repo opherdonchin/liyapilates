@@ -10,7 +10,7 @@ class NewLessonForm(forms.ModelForm):
         widget=forms.Textarea(
             attrs={'rows': 5, 'placeholder': 'Lesson notes'}
         ),
-        max_length=4000)
+        max_length=4000, required=False)
 
     class Meta:
         model = Lesson
@@ -28,7 +28,7 @@ class EditLessonForm(forms.ModelForm):
         widget=forms.Textarea(
             attrs={'rows': 5, 'placeholder': 'Lesson notes'}
         ),
-        max_length=4000)
+        max_length=4000, required=False)
 
     class Meta:
         model = Lesson
@@ -40,7 +40,7 @@ class LessonDetailsForm(forms.ModelForm):
         widget=forms.Textarea(
             attrs={'rows': 5, 'placeholder': 'Lesson notes'}
         ),
-        max_length=4000)
+        max_length=4000, required=False)
 
     class Meta:
         model = Lesson
@@ -55,7 +55,7 @@ class ClientNotesForm(forms.ModelForm):
         widget=forms.Textarea(
             attrs={'rows': 5, 'placeholder': 'Client notes'}
         ),
-        max_length=4000)
+        max_length=4000, required=False)
 
     class Meta:
         model = Client
@@ -92,7 +92,7 @@ class NewClientForm(forms.ModelForm):
         widget=forms.Textarea(
             attrs={'rows': 5, 'placeholder': 'Client notes'}
         ),
-        max_length=4000)
+        max_length=4000, required=False)
 
     class Meta:
         model = Client
