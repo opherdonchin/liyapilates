@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
+{% load bootstrap4 %}
 
 {% block title %}New lesson{% endblock %}
+
+{% block extrahead %}{{ form.media }}{% endblock %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
@@ -10,8 +13,9 @@
 {% block content %}
     <form method="post" novalidate>
         {% csrf_token %}
-        {% include 'includes/form.html' %}
-        <button type="submit" class="btn btn-success">Create</button>
+        {% bootstrap_button "Create" button_type="submit" button_class="btn-success" %}
+        {% bootstrap_form form %}
+        {% bootstrap_button "Create" button_type="submit" button_class="btn-success" %}
         {# TODO: Make cancel button for form #}
     </form>
 {% endblock %}

@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block extrahead %}{{ form.media }}{% endblock %}
 
 {% block title %}Client lessons attended{% endblock %}
 
@@ -11,7 +14,8 @@
 {% block content %}
     <form method="post" novalidate>
         {% csrf_token %}
-        {% include 'includes/form.html' %}
-        <button type="submit" class="btn btn-success">Save</button>
+        {% bootstrap_button "Save" button_type="submit" button_class="btn-success" %}
+        {% bootstrap_form form %}
+        {% bootstrap_button "Save" button_type="submit" button_class="btn-success" %}
     </form>
 {% endblock %}

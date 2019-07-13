@@ -43,6 +43,8 @@ INSTALLED_APPS = [
 
     'widget_tweaks',
     'import_export',
+    'bootstrap4',
+    'bootstrap_datepicker_plus',
 
     'clientlist.apps.ClientlistConfig',
 ]

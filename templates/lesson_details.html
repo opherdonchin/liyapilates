@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block extrahead %}{{ form.media }}{% endblock %}
 
 {# TODO: Make lessons detail page an editable form or an edit mode #}
 
@@ -9,6 +12,7 @@
 {% block stylesheet %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
 {% endblock %}
+
 
 {% block javascript %}
     <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
@@ -45,7 +49,8 @@
     </table>
     <form method="post" novalidate>
         {% csrf_token %}
-        {% include 'includes/form.html' %}
-        <button type="submit" class="btn btn-success">Update</button>
+        {% bootstrap_button "Update" button_type="submit" button_class="btn-success" %}
+        {% bootstrap_form form %}
+        {% bootstrap_button "Update" button_type="submit" button_class="btn-success" %}
     </form>
 {% endblock %}
