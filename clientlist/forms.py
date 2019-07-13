@@ -20,7 +20,7 @@ class NewLessonForm(forms.ModelForm):
             'participants': forms.CheckboxSelectMultiple(),
             'held_at': DateTimePickerInput(format='%Y-%m-%d %H:%M',
                                            options={
-                                               "sideBySide": True,
+                                               "sideBySide": False,
                                                "stepping": 15
                                            })
         }
@@ -42,7 +42,7 @@ class EditLessonForm(forms.ModelForm):
         widgets = {
             'held_at': DateTimePickerInput(format='%Y-%m-%d %H:%M',
                                            options={
-                                               "sideBySide": True,
+                                               "sideBySide": False,
                                                "stepping": 15
                                            })
         }
