@@ -192,7 +192,15 @@ def lesson_details(request, pk):
     if request.method == 'POST':
         form = LessonDetailsForm(request.POST, instance=lesson)
         if form.is_valid():
-            lesson = form.save()
+            lesson = form.save(commit=False)
+            clients_attending = form.cleaned_data['clients_attending']
+            clients_not_attending = form.cleaned_data['clients_not_attending']
+            new_clients_attending = clients_attending.union(clients_not_attending)
+            lesson.participants.clear()
+            for client in new_clients_attending:
+                lesson.participants.add(client)
+
+            lesson.save()
             return redirect('lesson_details', pk=lesson.pk)
     else:
         form = LessonDetailsForm(instance=lesson)
