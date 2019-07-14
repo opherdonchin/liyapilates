@@ -138,9 +138,10 @@ def client_lessons(request, client_slug):
             client = form.save(commit=False)
             lessons_attended = form.cleaned_data['lessons_attended']
             lessons_not_attended = form.cleaned_data['lessons_not_attended']
-            new_lessons_attended = lessons_attended.union(lessons_not_attended)
             client.lessons.clear()
-            for lesson in new_lessons_attended:
+            for lesson in lessons_attended:
+                client.lessons.add(lesson)
+            for lesson in lessons_not_attended:
                 client.lessons.add(lesson)
 
             client.save()
@@ -195,11 +196,11 @@ def lesson_details(request, pk):
             lesson = form.save(commit=False)
             clients_attending = form.cleaned_data['clients_attending']
             clients_not_attending = form.cleaned_data['clients_not_attending']
-            new_clients_attending = clients_attending.union(clients_not_attending)
             lesson.participants.clear()
-            for client in new_clients_attending:
+            for client in clients_attending:
                 lesson.participants.add(client)
-
+            for client in clients_not_attending:
+                lesson.participants.add(client)
             lesson.save()
             return redirect('lesson_details', pk=lesson.pk)
     else:
