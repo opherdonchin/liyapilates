@@ -25,6 +25,9 @@ class Client(models.Model):
     joined_on = models.DateField(default=date.today)
     notes = models.CharField(max_length=4000, blank=True, default='')
 
+    class Meta:
+        ordering =  ['name']
+
     def __str__(self):
         return self.name
 

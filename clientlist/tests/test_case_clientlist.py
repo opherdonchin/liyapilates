@@ -2,7 +2,7 @@ from datetime import timedelta
 from django.utils import timezone
 from django.test import TestCase
 from ..models import Client, Card, CardType, Lesson, LessonType
-
+from django.test.utils import setup_test_environment
 
 class ClientListTestCase(TestCase):
     client_name1 = 'Sarah Shadlock'
@@ -38,13 +38,13 @@ class ClientListTestCase(TestCase):
                                              slug=self.client_slug1)
         self.client2 = Client.objects.create(name=self.client_name2,
                                              slug=self.client_slug2)
-        Card.objects.create(type=card_type,
+        self.card1 = Card.objects.create(type=card_type,
                             purchased_on=self.card_purchased_on,
                             begins_on=self.card_begins_on,
                             expires=self.card_expires,
                             num_lessons=self.card_num_lessons,
                             client=self.client2)
-        Card.objects.create(type=card_type,
+        self.card2 = Card.objects.create(type=card_type,
                             purchased_on=self.card_purchased_on2,
                             begins_on=self.card_begins_on2,
                             expires=self.card_expires2,

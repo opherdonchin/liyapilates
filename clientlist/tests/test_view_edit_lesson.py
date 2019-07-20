@@ -25,7 +25,7 @@ class EditLessonTests(ClientListTestCase):
     def test_contains_button_links(self):
         homepage_url = reverse('home')
         self.assertContains(self.response, 'a href="{0}"'.format(homepage_url))
-        self.assertContains(self.response, '<button type="submit"')
+        self.assertContains(self.response, '<button class="btn btn-success" type="submit">', 2)
 
     def test_breadcrumbs(self):
         home_url = reverse('home')

@@ -53,7 +53,7 @@ class AddCardViewTests(ClientListTestCase):
         self.assertIsInstance(form, AddCardForm)
 
     def test_form_inputs(self):
-        self.assertContains(self.response, '<input', 3)
+        self.assertContains(self.response, '<input', 2)
         self.assertContains(self.response, '<select', 1)
         self.assertContains(self.response, '<option', 2)
 
@@ -62,7 +62,7 @@ class SuccessfulAddCardViewTests(ClientListTestCase):
     def setUp(self):
         super().setUp()
         self.url = reverse('add_card', kwargs={'client_slug': self.client_slug1})
-        self.new_card_type = CardType.objects.get(pk=1)
+        self.new_card_type = CardType.objects.first()
         self.new_card_purchased = date.today()
         self.response = self.client.post(self.url,
                                          {'type': '{0}'.format(self.new_card_type.pk),
@@ -73,7 +73,7 @@ class SuccessfulAddCardViewTests(ClientListTestCase):
                                                     kwargs={'client_slug': self.client_slug1}),
                              status_code=302, target_status_code=200)
 
-    def test_post_edited(self):
+    def test_card_added(self):
         added_card = Client.objects.get(slug=self.client_slug1).cards.latest('purchased_on')
         self.assertEquals(added_card.type, self.new_card_type)
         self.assertEquals(added_card.purchased_on, self.new_card_purchased)

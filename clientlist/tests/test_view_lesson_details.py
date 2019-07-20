@@ -81,31 +81,21 @@ class SuccessfulLessonDetailsTests(ClientListTestCase):
         super().setUp()
         self.lesson_pk = self.lesson.pk
         self.url = reverse('lesson_details', kwargs={'pk': self.lesson_pk})
-        self.new_participants = [self.client_slug1, ]
+        self.new_participants = [self.client1.pk, ]
         self.new_notes = 'New notes'
         self.response = self.client.post(self.url,
-                                         {'notes': self.new_notes, 'participants': self.new_participants})
+                                         {'notes': self.new_notes,
+                                          'clients_attending': self.new_participants,
+                                          'client_not_attending': []})
 
     def test_redirection(self):
         self.assertRedirects(self.response, reverse('lesson_details',
                                                     kwargs={'pk': self.lesson_pk}))
 
-    def test_post_edited(self):
+    def test_lesson_updated(self):
         updated_lesson = Lesson.objects.get(pk=self.lesson_pk)
         self.assertEquals(updated_lesson.notes, self.new_notes)
-        updated_participants = list(updated_lesson.participants.all().values_list('slug', flat=True).distinct())
+        updated_participants = list(updated_lesson.participants.all().values_list('pk', flat=True).distinct())
         self.assertEquals(updated_participants, self.new_participants)
 
 
-class UnsuccessfulClientEditViewTests(ClientListTestCase):
-    def setUp(self):
-        super().setUp()
-        self.url = reverse('lesson_details', kwargs={'pk': self.lesson.pk})
-        self.response = self.client.post(self.url, {})
-
-    def test_status_code(self):
-        self.assertEqual(self.response.status_code, 200)
-
-    def test_form_errors(self):
-        form = self.response.context.get('form')
-        self.assertTrue(form.errors)

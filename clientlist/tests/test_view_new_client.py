@@ -49,7 +49,7 @@ class AddCardViewTests(ClientListTestCase):
         self.assertIsInstance(form, NewClientForm)
 
     def test_form_inputs(self):
-        self.assertContains(self.response, '<input', 4)
+        self.assertContains(self.response, '<input', 3)
         self.assertContains(self.response, '<textarea', 1)
 
 

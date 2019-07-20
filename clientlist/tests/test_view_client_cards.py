@@ -19,23 +19,28 @@ class ClientCardsViewTests(ClientListTestCase):
     def test_contains_button_links(self):
         home_url = reverse('home')
         add_card_url = reverse('add_card', kwargs={'client_slug': self.client_slug2})
+        edit_card_url = reverse('edit_card',
+                                kwargs={'client_slug': self.client_slug2, 'card_pk':self.card1.pk})
         self.assertContains(self.response, 'href="{0}"'.format(home_url))
         self.assertContains(self.response, 'href="{0}" class="btn'.format(add_card_url))
+        self.assertContains(self.response, 'href="{0}" class="btn'.format(edit_card_url))
 
     def test_html_data(self):
         self.assertContains(self.response, '<h1>{0}: List of cards</h1>'
                             .format(self.client_name2))
         self.assertContains(self.response, '<tr>', 3)
-        self.assertContains(self.response, '<td>{0:%B %#d, %Y}</td> \
-                    <td>{1:%B %#d, %Y}</td> \
-                    <td>{2:%B %#d, %Y}</td> \
-                    <td>{3}</td> \
-                    <td>1</td> \
-                    <td>{4}</td>'.format(self.card_purchased_on,
-                                         self.card_begins_on,
-                                         self.card_expires,
-                                         self.card_num_lessons,
-                                         self.card_num_lessons - 1), html=True)
+        self.assertContains(self.response,
+                            '<td>{0:%B %#d, %Y}</td>'.format(self.card_purchased_on), html=True)
+        self.assertContains(self.response,
+                            '<td>{0:%B %#d, %Y}</td>'.format(self.card_begins_on), html=True)
+        self.assertContains(self.response,
+                            '<td>{0:%B %#d, %Y}</td>'.format(self.card_expires), html=True)
+        self.assertContains(self.response,
+                            '<td>{0}</td>'.format(self.card_num_lessons), html=True)
+        self.assertContains(self.response,
+                            '<td>{0}</td>'.format(1), html=True)
+        self.assertContains(self.response,
+                            '<td>{0}</td>'.format(self.card_num_lessons-1), html=True)
 
     def test_breadcrumbs(self):
         home_url = reverse('home')

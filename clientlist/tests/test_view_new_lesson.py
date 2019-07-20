@@ -71,7 +71,7 @@ class SuccessfulLessonDetailsTests(ClientListTestCase):
         self.url = reverse('new_lesson')
         self.new_held_at = timezone.now() + timedelta(days=2)
         self.new_type = self.lesson_type
-        self.new_participants = [self.client_slug1, ]
+        self.new_participants = [self.client1.pk, ]
         self.new_notes = 'New notes'
         self.response = self.client.post(self.url,
                                          {'held_at': self.new_held_at,
@@ -87,7 +87,7 @@ class SuccessfulLessonDetailsTests(ClientListTestCase):
         self.assertTrue(lesson)
         self.assertEquals(lesson.type, self.new_type)
         self.assertEquals(lesson.notes, self.new_notes)
-        new_participants = list(lesson.participants.all().values_list('slug', flat=True).distinct())
+        new_participants = list(lesson.participants.all().values_list('pk', flat=True).distinct())
         self.assertEquals(new_participants, self.new_participants)
 
 
