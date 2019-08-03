@@ -22,13 +22,13 @@ class AddCardViewTests(ClientListTestCase):
 
     def test_contains_breadcrumb_links(self):
         home_url = reverse('home')
-        edit_client_url = reverse('client_details', kwargs={'client_slug': self.client_slug1})
+        client_url = reverse('client_details', kwargs={'client_slug': self.client_slug1})
         self.assertContains(self.response,
                             '<li class="breadcrumb-item"><a href="{0}">Home</a>'
                             .format(home_url), html=True)
         self.assertContains(self.response,
                             '<li class="breadcrumb-item"><a href="{0}">{1}</a>'
-                            .format(edit_client_url, self.client_name1), html=True)
+                            .format(client_url, self.client_name1), html=True)
 
     def test_contains_navbar_links(self):
         client_list_url = reverse('client_list')

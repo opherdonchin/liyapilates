@@ -2,29 +2,38 @@ from django.urls import reverse, resolve
 from datetime import date
 
 from .test_case_clientlist import ClientListTestCase
-from ..models import Client
-from ..views import new_client
-from ..forms import NewClientForm
+from ..models import CardType, Client
+from ..views import edit_card
+from ..forms import EditCardForm
 
 
-class AddCardViewTests(ClientListTestCase):
+class EditCardViewTests(ClientListTestCase):
     def setUp(self):
         super().setUp()
-        self.url = reverse('new_client')
+        self.url = reverse('edit_card', kwargs={'client_slug': self.client_slug1, 'card_pk': self.card1.pk})
         self.response = self.client.get(self.url)
 
     def test_status_code(self):
         self.assertEquals(self.response.status_code, 200)
 
     def test_resolves_correct_view(self):
-        view = resolve('/new_client/')
-        self.assertEquals(view.func, new_client)
+        view = resolve('client/{0}/edit_card/{1}/'.format(
+            self.client_slug1, self.card1.pk))
+        self.assertEquals(view.func, edit_card)
 
     def test_contains_breadcrumb_links(self):
         home_url = reverse('home')
+        client_url = reverse('client_details', kwargs={'client_slug': self.client_slug1})
+        cards_url = reverse('client_cards', kwargs={'client_cards': self.client_slug1})
         self.assertContains(self.response,
                             '<li class="breadcrumb-item"><a href="{0}">Home</a>'
                             .format(home_url), html=True)
+        self.assertContains(self.response,
+                            '<li class="breadcrumb-item"><a href="{0}">{1}</a>'
+                            .format(client_url, self.client_name1), html=True)
+        self.assertContains(self.response,
+                            '<li class="breadcrumb-item"><a href="{0}">Cards</a>'
+                            .format(cards_url), html=True)
 
     def test_contains_navbar_links(self):
         client_list_url = reverse('client_list')
@@ -46,51 +55,37 @@ class AddCardViewTests(ClientListTestCase):
 
     def test_contains_form(self):
         form = self.response.context.get('form')
-        self.assertIsInstance(form, NewClientForm)
+        self.assertIsInstance(form, EditCardForm)
 
     def test_form_inputs(self):
-        self.assertContains(self.response, '<input', 3)
-        self.assertContains(self.response, '<textarea', 1)
+        self.assertContains(self.response, '<input', 5)
 
 
-class SuccessfulAddCardViewTests(ClientListTestCase):
+class SuccessfulEditCardViewTests(ClientListTestCase):
     def setUp(self):
         super().setUp()
-        self.url = reverse('new_client')
-        self.new_client_name = 'Jop Bop'
-        self.new_client_joined = date.today()
-        self.new_client_notes = 'Notes for new client'
+        self.url = reverse('edit_card', kwargs={'client_slug': self.client_slug1})
+        self.new_card_type = self.card_type_name
+        self.new_card_purchased = date.today()
         self.response = self.client.post(self.url,
-                                         {'name': self.new_client_name,
-                                          'joined_on': self.new_client_joined,
-                                          'notes': self.new_client_notes})
-        self.new_client = Client.objects.get(name=self.new_client_name)
-        self.new_client_name2 = u'יוסף כרמן'
-        self.new_client_joined2 = date.today()
-        self.new_client_notes2 = 'Hebrew name'
-        self.response = self.client.post(self.url,
-                                         {'name': self.new_client_name2,
-                                          'joined_on': self.new_client_joined2,
-                                          'notes': self.new_client_notes2})
-        self.new_client2 = Client.objects.get(name=self.new_client_name2)
+                                         {'type': "{0}".format(self.new_card_type.pk),
+                                          'purchased_on': self.new_card_purchased})
 
     def test_redirection(self):
         self.assertRedirects(self.response, reverse('client_details',
-                                                    kwargs={'client_slug': self.new_client.slug}))
+                                                    kwargs={'client_slug': self.client_slug1}),
+                             status_code=302, target_status_code=200)
 
-    def test_post_edited(self):
-        self.assertEquals(self.new_client.name, self.new_client.name)
-        self.assertEquals(self.new_client.joined_on, self.new_client_joined)
-        self.assertEquals(self.new_client.notes, self.new_client_notes)
+    def test_card_added(self):
+        added_card = Client.objects.get(slug=self.client_slug1).cards.latest('purchased_on')
+        self.assertEquals(added_card.type, self.new_card_type)
+        self.assertEquals(added_card.purchased_on, self.new_card_purchased)
 
-    def test_slugs_formed(self):
-        self.assertEquals(self.new_client.slug, 'jop-bop')
-        self.assertEquals(self.new_client2.slug, 'ivsf-crmn')
 
 class UnsuccessfulClientEditViewTests(ClientListTestCase):
     def setUp(self):
         super().setUp()
-        self.url = reverse('new_client')
+        self.url = reverse('add_card', kwargs={'client_slug': self.client_slug1})
         self.response = self.client.post(self.url, {})
 
     def test_status_code(self):

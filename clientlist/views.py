@@ -26,7 +26,7 @@ def client_list(request):
 
     current_cards = Card.objects.filter(client=OuterRef('pk'),
                                         purchased_on__lte=timezone.now(),
-                                        expires__gte=timezone.now()).order_by("-purchased_on")
+                                        expires__gte=timezone.now()).order_by("purchased_on")
     newest_lessons = Lesson.objects.filter(participants=OuterRef('pk')).values('participants').order_by('held_at')
 
     clients = clients.annotate(card_type=Subquery(current_cards[:1].values('type__name'))) \
@@ -49,7 +49,7 @@ def client_details(request, client_slug):
     if client.cards.count() > 0:
         client.card = client.cards \
             .filter(begins_on__lte=timezone.now(), expires__gte=timezone.now()) \
-            .latest('-expires')
+            .latest('-purchased_on')
     else:
         client.card = None
 
@@ -157,19 +157,7 @@ def new_client(request):
         if form.is_valid():
             client = form.save(commit=False)
 
-            # Convert Hebrew characters to english equivalents for slug
-            hebrew = u'אבגדהוזחטיכךלמםנןסעפףצקרשת'
-            english = ['a', 'b', 'g', 'd', 'h', 'v', 'z', 'gh', 't', 'i', 'c', 'ch', 'l', 'm', 'm', 'n', 'n', 's', 'a',
-                       'p', 'f',
-                       'tz', 'ts', 'k', 'r', 'sh', 'th']
-            translated_name = ''
-            for i in client.name:
-                indx = hebrew.find(i, 0)
-                if indx == -1:
-                    translated_name += i
-                else:
-                    translated_name += english[indx]
-
+            translated_name = client.name_in_english() # Convert Hebrew characters to English sound-alikes
             client.slug = slugify(translated_name)  # TODO: Make this a unique slug. Possibly override save function
             client.added_on = datetime.now()
             client.card = None

@@ -37,6 +37,21 @@ class Client(models.Model):
     def get_notes_as_markdown(self):
         return mark_safe(markdown(self.notes, safe_mode='escape'))
 
+    def name_in_english(self):
+        # Convert Hebrew characters to english equivalents for slug
+        hebrew = u'אבגדהוזחטיכךלמםנןסעפףצץקרשת'
+        english = ['a', 'b', 'g', 'd', 'h', 'v', 'z', 'gh', 't', 'i', 'c', 'ch', 'l', 'm', 'm', 'n', 'n', 's', 'a',
+                   'p', 'f',
+                   'tz', 'ts', 'k', 'r', 'sh', 'th']
+        translated_name = ''
+        for i in self.name:
+            indx = hebrew.find(i, 0)
+            if indx == -1:
+                translated_name += i
+            else:
+                translated_name += english[indx]
+        return translated_name
+
 
 class Card(models.Model):
     type = models.ForeignKey(CardType, on_delete=models.PROTECT)
